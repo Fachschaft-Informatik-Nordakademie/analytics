@@ -56,7 +56,14 @@ export async function GET(request: Request) {
 
     claims = tokens.claims();
   } catch (e: any) {
-    return errorPage(e?.message || 'OIDC-Austausch fehlgeschlagen.');
+    console.error('OIDC token exchange failed', {
+      message: e?.message,
+      error: e?.error,
+      error_description: e?.error_description,
+      cause: e?.cause,
+      redirect_uri: currentUrl.toString(),
+    });
+    return errorPage(e?.error_description || e?.error || e?.message || 'OIDC-Austausch fehlgeschlagen.');
   }
 
   if (!claims?.sub) {
