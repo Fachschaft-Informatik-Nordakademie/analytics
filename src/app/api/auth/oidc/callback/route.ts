@@ -41,9 +41,9 @@ export async function GET(request: Request) {
 
   const config = await getOidcConfig();
   const baseUrl = getBaseUrl(await headers());
-  const currentUrl = new URL(request.url);
-  currentUrl.protocol = baseUrl.protocol;
-  currentUrl.host = baseUrl.host;
+  const incomingUrl = new URL(request.url);
+  const currentUrl = new URL('/api/auth/oidc/callback', baseUrl);
+  currentUrl.search = incomingUrl.search;
 
   let claims;
 
