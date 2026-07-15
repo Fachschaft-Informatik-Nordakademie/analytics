@@ -1,4 +1,5 @@
 import {
+  Button,
   Column,
   Form,
   FormButtons,
@@ -7,6 +8,7 @@ import {
   Heading,
   Icon,
   PasswordField,
+  Text,
   TextField,
 } from '@umami/react-zen';
 import { useRouter } from 'next/navigation';
@@ -15,7 +17,7 @@ import { Logo } from '@/components/svg';
 import { setClientAuthToken } from '@/lib/client';
 import { setUser } from '@/store/app';
 
-export function LoginForm() {
+export function LoginForm({ oidcEnabled }: { oidcEnabled: boolean }) {
   const { t, labels, getErrorMessage } = useMessages();
   const router = useRouter();
   const { mutateAsync, error } = useUpdateQuery('/auth/login');
@@ -36,6 +38,22 @@ export function LoginForm() {
         <Logo />
       </Icon>
       <Heading>FS INF Analytics</Heading>
+      {oidcEnabled && (
+        <Column gap="4" style={{ minWidth: 300 }}>
+          <Button
+            variant="primary"
+            style={{ width: '100%' }}
+            onPress={() => {
+              window.location.href = '/api/auth/oidc';
+            }}
+          >
+            Mit Authentik anmelden
+          </Button>
+          <Text align="center" color="muted">
+            oder
+          </Text>
+        </Column>
+      )}
       <Form onSubmit={handleSubmit} error={getErrorMessage(error)} style={{ minWidth: 300 }}>
         <FormField
           label={t(labels.username)}
