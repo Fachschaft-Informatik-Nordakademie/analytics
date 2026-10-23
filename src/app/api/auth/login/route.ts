@@ -6,10 +6,15 @@ import { createSecureToken } from '@/lib/jwt';
 import { checkPassword } from '@/lib/password';
 import redis from '@/lib/redis';
 import { parseRequest } from '@/lib/request';
-import { json, unauthorized } from '@/lib/response';
+import { passwordLoginDisabled } from '@/lib/oidc';
+import { json, notFound, unauthorized } from '@/lib/response';
 import { getAllUserTeams, getUserByUsername } from '@/queries/prisma';
 
 export async function POST(request: Request) {
+  if (passwordLoginDisabled()) {
+    return notFound();
+  }
+
   const schema = z.object({
     username: z.string(),
     password: z.string(),
