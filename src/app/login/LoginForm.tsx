@@ -17,7 +17,14 @@ import { Logo } from '@/components/svg';
 import { setClientAuthToken } from '@/lib/client';
 import { setUser } from '@/store/app';
 
-export function LoginForm({ oidcEnabled }: { oidcEnabled: boolean }) {
+export function LoginForm({
+  oidcEnabled,
+  passwordLoginDisabled = false,
+}: {
+  oidcEnabled: boolean;
+  passwordLoginDisabled?: boolean;
+}) {
+  const showPasswordForm = !(oidcEnabled && passwordLoginDisabled);
   const { t, labels, getErrorMessage } = useMessages();
   const router = useRouter();
   const { mutateAsync, error } = useUpdateQuery('/auth/login');
@@ -47,42 +54,46 @@ export function LoginForm({ oidcEnabled }: { oidcEnabled: boolean }) {
               window.location.href = '/api/auth/oidc';
             }}
           >
-            Mit Authentik anmelden
+            Studi Portal Anmeldung
           </Button>
-          <Text align="center" color="muted">
-            oder
-          </Text>
+          {showPasswordForm && (
+            <Text align="center" color="muted">
+              oder
+            </Text>
+          )}
         </Column>
       )}
-      <Form onSubmit={handleSubmit} error={getErrorMessage(error)} style={{ minWidth: 300 }}>
-        <FormField
-          label={t(labels.username)}
-          data-test="input-username"
-          name="username"
-          rules={{ required: t(labels.required) }}
-        >
-          <TextField autoComplete="username" />
-        </FormField>
-
-        <FormField
-          label={t(labels.password)}
-          data-test="input-password"
-          name="password"
-          rules={{ required: t(labels.required) }}
-        >
-          <PasswordField autoComplete="current-password" />
-        </FormField>
-        <FormButtons>
-          <FormSubmitButton
-            data-test="button-submit"
-            variant="primary"
-            style={{ flex: 1 }}
-            isDisabled={false}
+      {showPasswordForm && (
+        <Form onSubmit={handleSubmit} error={getErrorMessage(error)} style={{ minWidth: 300 }}>
+          <FormField
+            label={t(labels.username)}
+            data-test="input-username"
+            name="username"
+            rules={{ required: t(labels.required) }}
           >
-            {t(labels.login)}
-          </FormSubmitButton>
-        </FormButtons>
-      </Form>
+            <TextField autoComplete="username" />
+          </FormField>
+
+          <FormField
+            label={t(labels.password)}
+            data-test="input-password"
+            name="password"
+            rules={{ required: t(labels.required) }}
+          >
+            <PasswordField autoComplete="current-password" />
+          </FormField>
+          <FormButtons>
+            <FormSubmitButton
+              data-test="button-submit"
+              variant="primary"
+              style={{ flex: 1 }}
+              isDisabled={false}
+            >
+              {t(labels.login)}
+            </FormSubmitButton>
+          </FormButtons>
+        </Form>
+      )}
     </Column>
   );
 }

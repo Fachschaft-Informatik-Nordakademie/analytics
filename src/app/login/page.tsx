@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { oidcEnabled } from '@/lib/oidc';
+import { oidcEnabled, passwordLoginDisabled } from '@/lib/oidc';
 import { LoginPage } from './LoginPage';
 
 export const dynamic = 'force-dynamic';
@@ -9,7 +9,7 @@ export default async function () {
     return null;
   }
 
-  return <LoginPage oidcEnabled={oidcEnabled()} />;
+  return <LoginPage oidcEnabled={oidcEnabled()} passwordLoginDisabled={passwordLoginDisabled()} />;
 }
 
 export const metadata: Metadata = {
